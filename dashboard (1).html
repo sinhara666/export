@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lead Tracker</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap">
+    <style>
+        :root {
+            --primary-color: #4567b7;
+            --accent-color: #03a9f4;
+            --background-color: #f8f8f2;
+        }
+        body {
+            font-family: 'Open Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            transition: background-color 0.3s ease;
+        }
+        .dark-mode {
+            --background-color: #2f2f2f;
+            --text-color: #fff;
+        }
+        .light-mode {
+            --background-color: #f8f8f2;
+            --text-color: #000;
+        }
+        header {
+            background-color: var(--primary-color);
+            color: #fff;
+            padding: 1em;
+            text-align: center;
+        }
+        .tabs {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 1em;
+            background-color: var(--primary-color);
+            color: #fff;
+        }
+        .tab {
+            padding: 1em;
+            cursor: pointer;
+        }
+        .tab.active {
+            background-color: var(--accent-color);
+        }
+        .content {
+            padding: 2em;
+        }
+        .card {
+            background-color: #fff;
+            padding: 1em;
+            border: 1px solid #ddd;
+            margin-bottom: 1em;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        .table th, .table td {
+            border: 1px solid #ddd;
+            padding: 0.5em;
+        }
+        .table th {
+            background-color: var(--primary-color);
+            color: #fff;
+        }
+        .counters {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 1em;
+        }
+        .counter {
+            background-color: #fff;
+            padding: 1em;
+            border: 1px solid #ddd;
+            margin: 1em;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form {
+            padding: 1em;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5em;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 0.5em;
+            margin-bottom: 1em;
+            border: 1px solid #ddd;
+        }
+        button {
+            background-color: var(--primary-color);
+            color: #fff;
+            padding: 0.5em 1em;
+            border: none;
+            border-radius: 0.5em;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: var(--accent-color);
+        }
+        .ai-chat {
+            position: fixed;
+            bottom: 1em;
+            right: 1em;
+            background-color: var(--primary-color);
+            color: #fff;
+            padding: 0.5em 1em;
+            border: none;
+            border-radius: 0.5em;
+            cursor: pointer;
+        }
+        .ai-chat-panel {
+            position: fixed;
+            bottom: 1em;
+            right: 1em;
+            background-color: #fff;
+            padding: 1em;
+            border: 1px solid #ddd;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+        .ai-chat-panel.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Lead Tracker</h1>
+        <h2>Sales Team Dashboard</h2>
+    </header>
+    <div class="tabs">
+        <div class="tab active" onclick="switchTab('company')">Company</div>
+        <div class="tab" onclick="switchTab('email')">Email</div>
+        <div class="tab" onclick="switchTab('contacts')">Contacts</div>
+        <div class="tab" onclick="switchTab('opportunities')">Opportunities</div>
+    </div>
+    <div class="content">
+        <div id="company" class="tab-content">
+            <h2>Company</h2>
+            <table class="table">
+                <tr>
+                    <th>Company Name</th>
+                    <th>Industry</th>
+                    <th>Location</th>
+                </tr>
+                <tr>
+                    <td>Company A</td>
+                    <td>Technology</td>
+                    <td>New York</td>
+                </tr>
+                <tr>
+                    <td>Company B</td>
+                    <td>Finance</td>
+                    <td>London</td>
+                </tr>
+            </table>
+            <button onclick="addCompany()">Add Company</button>
+        </div>
+        <div id="email" class="tab-content" style="display: none;">
+            <h2>Email</h2>
+            <form class="form">
+                <label for="email-subject">Subject</label>
+                <input type="text" id="email-subject" />
+                <label for="email-body">Body</label>
+                <textarea id="email-body"></textarea>
+                <button onclick="sendEmail()">Send Email</button>
+            </form>
+        </div>
+        <div id="contacts" class="tab-content" style="display: none;">
+            <h2>Contacts</h2>
+            <table class="table">
+                <tr>
+                    <th>Name</th>
+                    <th>Position</th>
+                    <th>Company</th>
+                </tr>
+                <tr>
+                    <td>John Doe</td>
+                    <td>CEO</td>
+                    <td>Company A</td>
+                </tr>
+                <tr>
+                    <td>Jane Doe</td>
+                    <td>CTO</td>
+                    <td>Company B</td>
+                </tr>
+            </table>
+            <button onclick="addContact()">Add Contact</button>
+        </div>
+        <div id="opportunities" class="tab-content" style="display: none;">
+            <h2>Opportunities</h2>
+            <div class="counters">
+                <div class="counter">
+                    <h3>Qualified Leads</h3>
+                    <p id="qualified-leads">0</p>
+                </div>
+                <div class="counter">
+                    <h3>Unqualified Leads</h3>
+                    <p id="unqualified-leads">0</p>
+                </div>
+            </div>
+            <button onclick="addOpportunity()">Add Opportunity</button>
+        </div>
+    </div>
+    <button class="ai-chat" onclick="openAiChat()">AI Chat</button>
+    <div class="ai-chat-panel">
+        <h2>Lead Management Assistant</h2>
+        <p>Please enter your Groq API key:</p>
+        <input type="text" id="groq-key" />
+        <button onclick="saveGroqKey()">Save</button>
+        <div id="ai-chat-log"></div>
+        <input type="text" id="ai-chat-input" />
+        <button onclick="sendAiChatMessage()">Send</button>
+    </div>
+    <script>
+        let currentTab = 'company';
+        let groqKey = localStorage.getItem('groq_key');
+        let aiChatLog = document.getElementById('ai-chat-log');
+        let aiChatInput = document.getElementById('ai-chat-input');
+
+        function switchTab(tab) {
+            document.querySelector(`#${currentTab}`).style.display = 'none';
+            document.querySelector(`#${tab}`).style.display = 'block';
+            currentTab = tab;
+            document.querySelector('.tab.active').classList.remove('active');
+            document.querySelector(`.tab[onclick="switchTab('${tab}')"]`).classList.add('active');
+        }
+
+        function addCompany() {
+            let company = prompt('Enter company name:');
+            let industry = prompt('Enter industry:');
+            let location = prompt('Enter location:');
+            let table = document.querySelector('.table');
+            let row = table.insertRow();
+            row.insertCell().textContent = company;
+            row.insertCell().textContent = industry;
+            row.insertCell().textContent = location;
+        }
+
+        function sendEmail() {
+            let subject = document.getElementById('email-subject').value;
+            let body = document.getElementById('email-body').value;
+            // Send email logic here
+            alert('Email sent!');
+        }
+
+        function addContact() {
+            let name = prompt('Enter name:');
+            let position = prompt('Enter position:');
+            let company = prompt('Enter company:');
+            let table = document.querySelector('.table');
+            let row = table.insertRow();
+            row.insertCell().textContent = name;
+            row.insertCell().textContent = position;
+            row.insertCell().textContent = company;
+        }
+
+        function addOpportunity() {
+            let qualifiedLeads = document.getElementById('qualified-leads').textContent;
+            let unqualifiedLeads = document.getElementById('unqualified-leads').textContent;
+            let opportunity = prompt('Enter opportunity:');
+            // Add opportunity logic here
+            alert('Opportunity added!');
+            qualifiedLeads++;
+            document.getElementById('qualified-leads').textContent = qualifiedLeads;
+        }
+
+        function openAiChat() {
+            let aiChatPanel = document.querySelector('.ai-chat-panel');
+            aiChatPanel.classList.toggle('show');
+        }
+
+        function saveGroqKey() {
+            groqKey = document.getElementById('groq-key').value;
+            localStorage.setItem('groq_key', groqKey);
+            alert('Groq API key saved!');
+        }
+
+        function sendAiChatMessage() {
+            let message = aiChatInput.value;
+            aiChatLog.innerHTML += `<p>You: ${message}</p>`;
+            aiChatInput.value = '';
+            fetch(`https://api.groq.com/v2/llama-3.3-70b-versatile`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${groqKey}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    'prompt': `Lead Management Assistant: ${message}`,
+                    'max_tokens': 2048,
+                    'temperature': 0.7
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                aiChatLog.innerHTML += `<p>AI: ${data.completion}</p>`;
+            })
+            .catch(error => console.error(error));
+        }
+    </script>
+</body>
+</html>
